@@ -1,16 +1,66 @@
-const Joi = require('@hapi/joi')
+const { body, validationResult } = require('express-validator');
+const { checkSchema } = require('express-validator');
 
-const registerSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email().lowercase().required(),
-  password: Joi.string().min(8).required(),
-  gender: Joi.string().required(),
-  role: Joi.string().required()
+const registerSchema = checkSchema({
+  name: {
+    isEmpty: {
+      errorMessage: 'Name should not be empty',
+      options: false
+    }
+  },
+  email: {
+    isEmpty: {
+      errorMessage: 'Email should not be empty',
+      options: false
+    },
+    isEmail: {
+      bail: true,
+    },
+  },
+  password: {
+    isEmpty: {
+      errorMessage: 'Password should not be empty',
+      options: false
+    },
+    isLength: {
+      errorMessage: 'Password should be at least 8 chars long',
+      options: { min: 8 },
+    },
+  },
+  gender: {
+    isEmpty: {
+      errorMessage: 'Gender should not be empty',
+      options: false
+    },
+  },
+  role: {
+    isEmpty: {
+      errorMessage: 'Role should not be empty',
+      options: false,
+    },
+  },
 })
 
-const loginSchema = Joi.object({
-  email: Joi.string().email().lowercase().required(),
-  password: Joi.string().min(8).required()
+const loginSchema = checkSchema({
+  email: {
+    isEmpty: {
+      errorMessage: 'Email should not be empty',
+      options: false
+    },
+    isEmail: {
+      bail: true,
+    },
+  },
+  password: {
+    isEmpty: {
+      errorMessage: 'Password should not be empty',
+      options: false
+    },
+    isLength: {
+      errorMessage: 'Password should be at least 8 chars long',
+      options: { min: 8 },
+    },
+  }
 })
 
 module.exports = {
