@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const User = require('../Models/User.model')
-const { registerSchema, loginSchema } = require('../helpers/validation_schema')
+const { validationResult } = require("express-validator");
 const {
   signAccessToken,
   verifyAccessToken,
@@ -9,24 +9,32 @@ const {
 module.exports = {
   register: async (req, res, next) => {
     try {
-      // validation
-      // if (!name || !email || !password || !gender || !role) throw createError.BadRequest()
-      const body = await registerSchema.validateAsync(req.body)
-      // if email already exist
-      const doesExist = await User.findOne({ email: body.email })
-      if (doesExist)
-        throw createError.Conflict(`${body.email} is already been registered`)
-      const user = new User(body)
-      const savedUser = await user.save()
-      console.log(savedUser.id)
+			// Extract the validation errors from a request.
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+        return res.status(400).json({
+          message: "Validation Error.",
+          errors: errors.array()
+        });
+      } 
+      else {
+        // if email already exist
+        const doesExist = await User.findOne({ email: req.body.email })
+        if (doesExist)
+          throw createError.Conflict(`${req.body.email} is already been registered`)
+        const user = new User(req.body)
+        const savedUser = await user.save()
+        console.log(savedUser.id)
 
-      const accessToken = await signAccessToken(savedUser.id)
-      console.log(accessToken)      
-      res.status(200).send({
-        id: savedUser.id,
-        accessToken: accessToken
-      })
-    } catch (error) {
+        const accessToken = await signAccessToken(savedUser.id)
+        console.log(accessToken)
+        res.status(200).send({
+          id: savedUser.id,
+          accessToken: accessToken
+        })
+      }
+    } 
+    catch (error) {
       if (error.isJoi === true) error.status = 422
       next(error)
     }
@@ -34,30 +42,38 @@ module.exports = {
 
   login: async (req, res, next) => {
     try {
-      // validation
-      const body = await loginSchema.validateAsync(req.body)
-      // if email not exist
-      const user = await User.findOne({ email: body.email })
-      if (!user) throw createError.NotFound('User not registered')
-      console.log(user.id)
-      // if password is not match
-      const isMatch = await user.isValidPassword(body.password)
-      if (!isMatch)
-        throw createError.Unauthorized('Email/password not valid')
-      console.log(isMatch)
+			// Extract the validation errors from a request.
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+        return res.status(400).json({
+          message: "Validation Error.",
+          errors: errors.array()
+        });
+      } 
+        else {
+        // if email not exist
+        const user = await User.findOne({ email: req.body.email })
+        if (!user) throw createError.NotFound('User not registered')
+        console.log(user._id)
+        // if password is not match
+        const isMatch = await user.isValidPassword(req.body.password)
+        if (!isMatch)
+          throw createError.Unauthorized('Email/password not valid')
+        console.log(isMatch)
 
-      const accessToken = await signAccessToken(user.id)
-      console.log(accessToken)
+        const accessToken = await signAccessToken(user.id)
+        console.log(accessToken)
 
-      res.status(200).send({ 
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-        token: accessToken,
-      })
+        res.status(200).send({ 
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
+          token: accessToken,
+        })
+      }
     } catch (error) {
       console.log(error)
       if (error.isJoi === true)
