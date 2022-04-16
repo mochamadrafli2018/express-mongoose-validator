@@ -50,30 +50,28 @@ module.exports = {
           errors: errors.array()
         });
       } 
-        else {
-        // if email not exist
-        const user = await User.findOne({ email: req.body.email })
-        if (!user) throw createError.NotFound('User not registered')
-        console.log(user._id)
-        // if password is not match
-        const isMatch = await user.isValidPassword(req.body.password)
-        if (!isMatch)
-          throw createError.Unauthorized('Email/password not valid')
-        console.log(isMatch)
+      console.log(req.body);
+      // if email not exist
+      const user = await User.findOne({ email: req.body.email })
+      if (!user) throw createError.NotFound('User not registered')
+      console.log(user._id)
+      // if password is not match
+      const isMatch = await user.isValidPassword(req.body.password)
+      if (!isMatch)
+        throw createError.Unauthorized('Email/password not valid')
+      console.log(isMatch)
+      const accessToken = await signAccessToken(user.id)
+      console.log(accessToken)
 
-        const accessToken = await signAccessToken(user.id)
-        console.log(accessToken)
-
-        res.status(200).send({ 
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-          token: accessToken,
-        })
-      }
+      res.status(200).send({ 
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+        token: accessToken,
+      })
     } catch (error) {
       console.log(error)
       if (error.isJoi === true)
