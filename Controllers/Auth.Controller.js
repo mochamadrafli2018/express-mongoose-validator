@@ -19,23 +19,29 @@ module.exports = {
       } 
       else {
         // if email already exist
-        const doesExist = await User.findOne({ email: req.body.email })
-        if (doesExist)
-          throw createError.Conflict(`${req.body.email} is already been registered`)
+        if (await User.findOne({ email: req.body.email }))
+          throw createError.Conflict(`${req.body.email} is already been registered`) // 409
+
         const user = new User(req.body)
         const savedUser = await user.save()
         console.log(savedUser.id)
 
         const accessToken = await signAccessToken(savedUser.id)
         console.log(accessToken)
-        res.status(200).send({
-          id: savedUser.id,
-          accessToken: accessToken
+
+        return res.status(200).send({ 
+          message: 'success',
+          user: {
+            id: savedUser.id,
+            name: savedUser.name,
+            email: savedUser.email,
+            role: savedUser.role,
+          },
+          token: accessToken,
         })
       }
     } 
     catch (error) {
-      if (error.isJoi === true) error.status = 422
       next(error)
     }
   },
@@ -53,17 +59,17 @@ module.exports = {
       console.log(req.body);
       // if email not exist
       const user = await User.findOne({ email: req.body.email })
-      if (!user) throw createError.NotFound('User not registered')
+      if (!user) throw createError.NotFound('User not registered') // 404
       console.log(user._id)
       // if password is not match
       const isMatch = await user.isValidPassword(req.body.password)
       if (!isMatch)
-        throw createError.Unauthorized('Email/password not valid')
+        throw createError.Unauthorized('Email/password not valid') // 401
       console.log(isMatch)
       const accessToken = await signAccessToken(user.id)
       console.log(accessToken)
 
-      res.status(200).send({ 
+      return res.status(200).send({ 
         user: {
           id: user._id,
           name: user.name,
@@ -74,15 +80,12 @@ module.exports = {
       })
     } catch (error) {
       console.log(error)
-      if (error.isJoi === true)
-        return next(createError.BadRequest('Invalid email/password'))
-        console.log(error.isJoi)
       next(error)
     }
   },
 
   userAuthorization: async (req, res, next) => {
-    if (!req.headers['authorization']) return next(createError.Unauthorized())
+    if (!req.headers['authorization']) return next(createError.Unauthorized()) // 401
     const authHeader = req.headers['authorization']
     const bearerToken = authHeader.split(' ')
     const token = bearerToken[1]

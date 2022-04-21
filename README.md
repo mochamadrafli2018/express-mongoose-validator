@@ -1,84 +1,42 @@
-# API Authentication using NodeJs
+## Express (4.17.3), Joi-Validator and Mongoose (6.1.4) with Auth and CRUD Application
 
-This is an Authentication API using JWT's that you can plug inside your current project or you can start with a new one. Email & Password is used for authentication.
+### Requirement
 
-The API based on Node.js, Express, MongoDB & Redis, following the **MVC pattern** i.e. Model ~~View~~ Controller.
+1. Node.js
+2. MongoDB URL
+3. Postman
 
-**Mongoose** is used for storing Users in Database.
-**Redis** is used for storing Refresh Tokens - to validate them as well at the same time Blacklisting them.
+### Set up
 
-The application is **production ready**.
-
----
-
-## To start setting up the project
-
-Step 1: Clone the repo
-
-```bash
-git clone https://github.com/trulymittal/API-Authentication-NodeJs.git
 ```
-
-Step 2: cd into the cloned repo and run:
-
-```bash
 npm install
 ```
 
-Step 3: Put your credentials in the .env file.
+This command will be installing all the package that listed in package.json file.
 
-```bash
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017
-DB_NAME=YOUR_DB_NAME
-ACCESS_TOKEN_SECRET=GENERATE_FROM_GENERATE_KEYS_FILE_IN_HELPER
-REFRESH_TOKEN_SECRET=GENERATE_FROM_GENERATE_KEYS_FILE_IN_HELPER
+### Running for development
+
+```
+npm run dev
 ```
 
-Step 4: To generate 256-bit keys for JWT
+App will be running on port 5000 (http://localhost:5000).
 
-```bash
-node ./helpers/generate_keys.js
+### Development
+
+Create file .env and make variable MONGO_URI and JWT_SECRET then assign the variable with MongoDB Atlas URL and JWT token.
+
+Example :
+
+```
+MONGO_URI = mongodb+srv://admin:<password>@cluster0.8z0ls.mongodb.net/<database_name>?retryWrites=true&w=majority
+JWT_SECRET=Super_secret_string
 ```
 
-Step 5: Install Redis (Linux Ubuntu)
+### API Endpoint
 
-```bash
-sudo apt-get install redis-server
-```
+Open `./routes`
 
-Step 6: Run Redis Server (Linux Ubuntu)
+### Important Note 
 
-```bash
-redis-server
-```
-
-Step 7: Install MongoDB (Linux Ubuntu)
-
-See <https://docs.mongodb.com/manual/installation/> for more infos
-
-Step 8: Run Mongo daemon
-
-```bash
-sudo service mongod start
-```
-
-Step 9: Start the API by
-
-```bash
-npm start
-```
-
-Step 10 (Optional): Change the expiration time of Access Token and Refresh Token according to your needs by going inside the **`./helpers/jwt_helper.js`** file.
-
-## Author
-
-- [**Truly Mittal**](https://trulymittal.com)
-
-## Contribute
-
-You can fork this repo and send me a PR.
-
-## License
-
-This project is licensed under the MIT License.
+This code was originally cloned from https://github.com/trulymittal/API-Authentication-NodeJs.git and I am just add or change several files. Thanks to the original authors.
