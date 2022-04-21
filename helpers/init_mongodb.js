@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 mongoose
-  .connect(process.env.ATLAS_URI)
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('mongodb connected.')
   })

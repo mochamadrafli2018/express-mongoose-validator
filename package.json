@@ -9,7 +9,7 @@
   },
   "description": "Node.js Restful CRUD and Auth API with Node.js, Express, Mongoose, Hapi/Joi Validation and MongoDB Atlas",
   "private": false,
-  "main": "index.js",
+  "main": "app.js",
   "keywords": [
     "nodejs",
     "express",
