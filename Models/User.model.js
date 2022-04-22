@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
       required: true,
       default: 'member'
     },
+    updatedScreeningResult : { 
+      type: String,
+      default: null,
+    },
   },
   { 
     timestamps: true 
@@ -59,5 +63,5 @@ UserSchema.methods.isValidPassword = async function (password) {
   }
 }
 
-const User = mongoose.model('user', UserSchema, 'users')
+const User = mongoose.model('User', UserSchema, 'users')
 module.exports = User

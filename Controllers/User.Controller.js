@@ -42,7 +42,7 @@ module.exports = {
             if (req.body.gender) { newGender = req.body.gender}
             if (req.body.role) { newRole = req.body.role}
             if (req.body.updatedScreeningResult) { newUpdatedScreeningResult = req.body.updatedScreeningResult}
-            const newData = new User({
+            const newData = User({
                 name: newName,
                 email: newEmail,
                 password: newPassword,
@@ -53,9 +53,7 @@ module.exports = {
             });
             console.log(newData)
             // update with new data
-            User.findByIdAndUpdate({
-                _id: req.params.id}, newData, { new: true }
-            )
+            User.findByIdAndUpdate( {_id: req.params.id}, newData, { new: true } )
             .then((updatedData) => {
                 console.log('success update data');
                 return res.status(200).send(updatedData);
