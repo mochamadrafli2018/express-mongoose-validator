@@ -1,4 +1,4 @@
-## Express (4.17.3), Express-Validator and Mongoose (6.1.4) with Auth and CRUD Application
+## Express (4.17.3), Express-Validator and Mongoose (6.2.10) with Auth and CRUD Application
 
 ### Requirement
 

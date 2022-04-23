@@ -108,14 +108,4 @@ module.exports = {
       return res.status(401).send({message: 'invalid jwt token'});
     }
   },
-
-  logout: async (req, res, next) => {
-    try {
-      const { refreshToken } = req.body
-      if (!refreshToken) throw createError.BadRequest()
-      // const userId = await verifyRefreshToken(refreshToken)
-    } catch (error) {
-      next(error)
-    }
-  },
 }
